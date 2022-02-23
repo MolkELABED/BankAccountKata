@@ -10,15 +10,14 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
-import org.project.BankAccountKata.repository.AccountRepository;
-import org.project.BankAccountKata.repository.CustomerRepository;
+import org.project.BankAccountKata.service.TransactionService;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class BankAccountKataApplicationTests {
 
-	AccountRepository accountRepository = new AccountRepository();
-	CustomerRepository customerRepository = new CustomerRepository();
+	private TransactionService service = new TransactionService();
+
 
 	@Test
 	@Order(1)
@@ -28,7 +27,7 @@ class BankAccountKataApplicationTests {
 		
 		//assert
 		assertThrows(AccountOperationsException.class, () -> {
-			accountRepository.findAccount(accountId);
+			service.findAccount(accountId);
 		});
 	}
 	
@@ -41,7 +40,7 @@ class BankAccountKataApplicationTests {
 		Account expectedAccount = new Account(accountId, balance);
 
 		//act
-		Account actualAccount = accountRepository.findAccount(accountId);
+		Account actualAccount = service.findAccount(accountId);
 
 		//assert
 		assertThat(actualAccount.getId()).isEqualTo(expectedAccount.getId());
@@ -54,7 +53,7 @@ class BankAccountKataApplicationTests {
 		List<Account> expectedAccountsList = Arrays.asList(new Account(1L, 1000D));
 		
 		//act
-		List<Account> actualAccountsList = customerRepository.customerAccountsList(customerId);
+		List<Account> actualAccountsList = service.customerAccountsList(customerId);
 
 		//assert
 		assertThat(actualAccountsList.get(0).getId()).isEqualTo(expectedAccountsList.get(0).getId());
@@ -67,7 +66,7 @@ class BankAccountKataApplicationTests {
 		
 		//assert
 		assertThrows(AccountOperationsException.class, () -> {
-			customerRepository.customerAccountsList(customerId);
+			service.customerAccountsList(customerId);
 		});
 	}
 	
@@ -79,7 +78,7 @@ class BankAccountKataApplicationTests {
 		
 		//assert
 		assertThrows(AccountOperationsException.class, () -> {
-			customerRepository.displayBalance(customerId, accountId);
+			service.displayBalance(customerId, accountId);
 		});
 	}
 	
@@ -91,7 +90,7 @@ class BankAccountKataApplicationTests {
 		Double expectedBalance = 1000D;
 		
 		//act
-		Double actualBalance = customerRepository.displayBalance(customerId, accountId);
+		Double actualBalance = service.displayBalance(customerId, accountId);
 		
 		//assert
 		assertThat(actualBalance).isEqualTo(expectedBalance);

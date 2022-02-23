@@ -25,25 +25,4 @@ public class CustomerRepository {
 				.findAny()
 				.orElseThrow(() -> new AccountOperationsException("Customer Not found"));
 	}
-	
-	//get the list of accounts associated to a customer using the id of customer
-	public List<Account> customerAccountsList(Long customerId) {
-		List<Account> accountsList = null;
-		List<Account> customerAccountsList = findCustomer(customerId).getAccounts();
-		if (customerAccountsList.size() > 0) {
-			accountsList = customerAccountsList;
-		} else {
-			throw new AccountOperationsException("Account not found");
-		}
-		return accountsList;
-	}
-	
-	//display the balance of an account using the id of the customer and the id of the account
-	public Double displayBalance(Long customerId, Long accountId) {
-		return findCustomer(customerId).getAccounts().stream()
-				.filter(account -> account.getId() == accountId)
-				.findAny()
-				.map(Account::getBalance)
-				.orElseThrow(() -> new AccountOperationsException("Account not found"));
-	}
 }

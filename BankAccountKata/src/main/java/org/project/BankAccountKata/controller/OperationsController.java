@@ -2,8 +2,7 @@ package org.project.BankAccountKata.controller;
 
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
-import org.project.BankAccountKata.repository.AccountRepository;
-import org.project.BankAccountKata.repository.CustomerRepository;
+import org.project.BankAccountKata.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OperationsController {
 	@Autowired(required = false)
-	AccountRepository accountRepository = new AccountRepository();
-	
-	@Autowired(required = false)
-	CustomerRepository customerRepository = new CustomerRepository();
+	TransactionService transactionService = new TransactionService();
 	
 	//find account by id
 	@GetMapping(value=("/accounts/{accountId}"))
 	public ResponseEntity<?> findAccount(@PathVariable("accountId") Long accountId) {
 		try {
-			return new ResponseEntity<Account>(accountRepository.findAccount(accountId), HttpStatus.OK);
+			return new ResponseEntity<Account>(transactionService.findAccount(accountId), HttpStatus.OK);
 		} catch(AccountOperationsException aoe) {
-			System.out.println(aoe.getMessage());
 			return new ResponseEntity<String>(aoe.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
@@ -34,7 +29,7 @@ public class OperationsController {
 	@GetMapping(value=("/customers/{customerId}/accounts"))
 	public ResponseEntity<?> customerAccountsList(@PathVariable("customerId") Long customerId) {
 		try {
-			return new ResponseEntity<>(customerRepository.customerAccountsList(customerId), HttpStatus.OK);
+			return new ResponseEntity<>(transactionService.customerAccountsList(customerId), HttpStatus.OK);
 		} catch(AccountOperationsException aoe) {
 			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.NOT_FOUND);
 		}
@@ -44,7 +39,7 @@ public class OperationsController {
 	@GetMapping(value="/accounts/{customerId}/{accountId}/balance")
 	public ResponseEntity<?> displayBalance(@PathVariable("accountId") Long accountId, @PathVariable("customerId") Long customerId) {
 		try {
-			return new ResponseEntity<>(customerRepository.displayBalance(accountId, customerId), HttpStatus.OK);
+			return new ResponseEntity<>(transactionService.displayBalance(accountId, customerId), HttpStatus.OK);
 		} catch(AccountOperationsException aoe) {
 			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.BAD_REQUEST);
 		}
