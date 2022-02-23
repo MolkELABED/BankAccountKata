@@ -1,7 +1,9 @@
 package org.project.BankAccountKata.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Account {
@@ -17,6 +19,9 @@ public Account(Long id, Double balance) {
   
   private Double balance;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Customer customer;
+  
   public Long getId() {
 	  return id;
   }
