@@ -3,6 +3,7 @@ package org.project.BankAccountKata.controller;
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.service.TransactionService;
+import org.project.BankAccountKata.entity.Customer;
 import org.project.BankAccountKata.entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class OperationsController {
 	@Autowired(required = false)
 	TransactionService transactionService = new TransactionService();
 	
-	//find account by id
+	//Find account by id
 	@GetMapping(value=("/accounts/{accountId}"))
 	public ResponseEntity<?> findAccount(@PathVariable("accountId") Long accountId) {
 		try {
@@ -28,7 +29,17 @@ public class OperationsController {
 		}
 	}
 	
-	//find list of account associated to a customer by id of the customer
+	//Find customer by id
+	@GetMapping(value=("/customers/{customerId}"))
+	public ResponseEntity<?> findCustomer(@PathVariable("customerId") Long customerId) {
+		try {
+			return new ResponseEntity<Customer>(transactionService.findCustomer(customerId), HttpStatus.OK);
+		} catch(AccountOperationsException aoe) {
+			return new ResponseEntity<String>(aoe.getMessage(), HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	//Find list of accounts associated to a customer using id of the customer
 	@GetMapping(value=("/customers/{customerId}/accounts"))
 	public ResponseEntity<?> customerAccountsList(@PathVariable("customerId") Long customerId) {
 		try {
@@ -38,7 +49,7 @@ public class OperationsController {
 		}
 	}
 	
-	//display the balance of an account by the customer id and the account id
+	//Display the balance of an account using the customer id and the account id
 	@GetMapping(value="/accounts/{customerId}/{accountId}/balance")
 	public ResponseEntity<?> displayBalance(@PathVariable("accountId") Long accountId, @PathVariable("customerId") Long customerId) {
 		try {
@@ -48,7 +59,7 @@ public class OperationsController {
 		}
 	}
 	
-	//save an operation by id of account
+	//Save an operation(deposit or withdraw) using id of account
 	@PostMapping(value="/transactions/{accountId}")
 	public ResponseEntity<?> operation(@RequestBody Transaction transaction) {
 		try {
@@ -58,7 +69,7 @@ public class OperationsController {
 		}
 	}
 	
-	//find a transaction(operation) by the id of the account
+	//Find an operation using the id of the account
 	@GetMapping(value="/transactions/{accountId}")
 	public ResponseEntity<?> accountOperationsList(@PathVariable("accountId") Long accountId) {
 		try {

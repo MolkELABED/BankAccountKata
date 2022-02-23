@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
+import static org.project.BankAccountKata.exception.AccountOperationsException.ACCOUNT_NOT_FOUND;
 
 public class AccountRepository {
 	public static List<Account> accounts = Arrays.asList(new Account(1L, 1000D),
@@ -21,6 +22,6 @@ public class AccountRepository {
 		return accounts.stream()
 				.filter(account -> account.getId() == accountId)
 				.findAny()
-				.orElseThrow(() -> new AccountOperationsException("Account not found"));
+				.orElseThrow(() -> new AccountOperationsException(ACCOUNT_NOT_FOUND));
 	}
 }

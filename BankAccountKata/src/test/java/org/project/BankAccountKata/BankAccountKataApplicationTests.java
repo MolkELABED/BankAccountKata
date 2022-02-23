@@ -20,9 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class BankAccountKataApplicationTests {
-
+	
 	private TransactionService service = new TransactionService();
-
 
 	@Test
 	@Order(1)
