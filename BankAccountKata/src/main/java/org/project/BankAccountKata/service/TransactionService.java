@@ -7,17 +7,21 @@ import org.project.BankAccountKata.entity.Customer;
 import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.repository.AccountRepository;
 import org.project.BankAccountKata.repository.CustomerRepository;
+import org.project.BankAccountKata.repository.TransactionRepository;
+import org.project.BankAccountKata.repository.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TransactionService {
-	List<Account> accounts = AccountRepository.accounts;
-	List<Customer> customers = CustomerRepository.customers;
+	static final Double MIN_DEPOSIT = 0.01;
 
 	@Autowired(required = false)
 	AccountRepository accountRepository = new AccountRepository();
 		
 	@Autowired(required = false)
 	CustomerRepository customerRepository = new CustomerRepository();
+	
+	@Autowired(required = false)
+	TransactionRepository transactionRepository= new TransactionRepository();
 	
 	public Account findAccount(Long accountId) {
 		return accountRepository.findAccount(accountId);
@@ -47,5 +51,30 @@ public class TransactionService {
 			throw new AccountOperationsException("Account not found");
 		}
 		return accountsList;
+	}
+	
+	//save or retrieve money from an account using the operationName=DEPOSIT/WITHDRAW, amount and id
+	//of the account
+	public Account operation(Operation operationName, Double amount, Long acountId) {
+		Account account = accountRepository.findAccount(acountId);
+		switch(operationName) {
+		case WITHDRAW:
+			if (account.getBalance() > amount) {
+				account.setBalance(account.getBalance() - amount);
+				transactionRepository.save(acountId, operationName, amount);
+				return account;
+			} else {
+				throw new AccountOperationsException("Insufficient credit to withdraw money.");
+			}
+		case DEPOSIT:
+			if (amount > MIN_DEPOSIT) {
+				account.setBalance(account.getBalance() + amount);
+				transactionRepository.save(acountId, operationName, amount);
+				return account;
+			} else {
+				throw new AccountOperationsException("Deposit is less than 0,01.");
+			}
+		}
+		return null;
 	}
 }

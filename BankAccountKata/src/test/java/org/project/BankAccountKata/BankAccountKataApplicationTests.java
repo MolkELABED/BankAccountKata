@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.service.TransactionService;
+import org.project.BankAccountKata.repository.Operation;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -94,6 +95,60 @@ class BankAccountKataApplicationTests {
 		
 		//assert
 		assertThat(actualBalance).isEqualTo(expectedBalance);
+	}
+	
+	@Test
+	public void should_throw_exception_when_customer_deposit_is_less_than_the_minimum_deposit() {
+		//arrange
+		Long accountId = 1L;
+		Double minimumDeposit = 0.01;
+		
+		//assert
+		assertThrows(AccountOperationsException.class, () -> {
+			service.operation(Operation.DEPOSIT, minimumDeposit, accountId);
+		});
+	}
+	
+	@Test
+	public void should_deposit_money() {
+		//arrange
+		Long accountId = 1L;
+		Account account = service.findAccount(accountId);
+		Double amount = 200D;
+		Double expectedBalance = 1200D;
+		
+		//act
+		service.operation(Operation.DEPOSIT, amount, accountId);
+		
+		//assert
+		assertThat(account.getBalance()).isEqualTo(expectedBalance);
+	}
+	
+	@Test
+	public void should_throw_exception_when_an_overdraft_is_used() {
+		//arrange
+		Long accountId = 2L;
+		Double amount = 2000D;
+		
+		//assert
+		assertThrows(AccountOperationsException.class, () -> {
+			service.operation(Operation.WITHDRAW, amount, accountId);
+		});
+	}
+	
+	@Test
+	public void should_withdraw_money() {
+		//arrange
+		Long accountId = 1L;
+		Account account = service.findAccount(accountId);
+		Double amount = 200D;
+		Double expectedBalance = 1000D;
+		
+		//act
+		service.operation(Operation.WITHDRAW, amount, accountId);
+		
+		//assert
+		assertThat(account.getBalance()).isEqualTo(expectedBalance);
 	}
 	
 	@Test

@@ -3,11 +3,14 @@ package org.project.BankAccountKata.controller;
 import org.project.BankAccountKata.entity.Account;
 import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.service.TransactionService;
+import org.project.BankAccountKata.entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,6 +43,16 @@ public class OperationsController {
 	public ResponseEntity<?> displayBalance(@PathVariable("accountId") Long accountId, @PathVariable("customerId") Long customerId) {
 		try {
 			return new ResponseEntity<>(transactionService.displayBalance(accountId, customerId), HttpStatus.OK);
+		} catch(AccountOperationsException aoe) {
+			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	//save an operation by id of account
+	@PostMapping(value="/transactions/{accountId}")
+	public ResponseEntity<?> operation(@RequestBody Transaction transaction) {
+		try {
+			return new ResponseEntity<>(transactionService.operation(transaction.getOperationName(), transaction.getAmount(), transaction.getId()), HttpStatus.OK);
 		} catch(AccountOperationsException aoe) {
 			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.BAD_REQUEST);
 		}
