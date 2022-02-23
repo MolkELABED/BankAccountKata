@@ -1,14 +1,18 @@
 package org.project.BankAccountKata;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.project.BankAccountKata.entity.Account;
+import org.project.BankAccountKata.entity.Transaction;
 import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.service.TransactionService;
 import org.project.BankAccountKata.repository.Operation;
@@ -57,7 +61,7 @@ class BankAccountKataApplicationTests {
 		List<Account> actualAccountsList = service.customerAccountsList(customerId);
 
 		//assert
-		assertThat(actualAccountsList.get(0).getId()).isEqualTo(expectedAccountsList.get(0).getId());
+		assertEquals(actualAccountsList, expectedAccountsList);
 	}
 	
 	@Test
@@ -149,6 +153,33 @@ class BankAccountKataApplicationTests {
 		
 		//assert
 		assertThat(account.getBalance()).isEqualTo(expectedBalance);
+	}
+	
+	@Test
+	public void should_display_list_operations() {
+		//arrange
+		Long accountId = 1L;
+		List<Transaction> expectedTransactionsList = new ArrayList<Transaction>(); 
+		
+		expectedTransactionsList.add(new Transaction(1L, LocalDateTime.now(), Operation.DEPOSIT ,200D));
+		expectedTransactionsList.add(new Transaction(1L, LocalDateTime.now(), Operation.WITHDRAW, 200D));
+		
+		//act
+		List<Transaction> actualTransactionsList = service.accountOperationsList(accountId);
+
+		//assert
+		assertEquals(actualTransactionsList, expectedTransactionsList);
+	}
+	
+	@Test
+	public void should_throw_exception_when_no_operation_associated_to_the_account() {
+		//arrange
+		Long accountId = 2L;
+		
+		//assert
+		assertThrows(AccountOperationsException.class, () -> {
+			service.accountOperationsList(accountId);
+		});
 	}
 	
 	@Test

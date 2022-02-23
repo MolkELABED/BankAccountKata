@@ -57,4 +57,14 @@ public class OperationsController {
 			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	//find a transaction(operation) by the id of the account
+	@GetMapping(value="/transactions/{accountId}")
+	public ResponseEntity<?> accountOperationsList(@PathVariable("accountId") Long accountId) {
+		try {
+			return new ResponseEntity<>(transactionService.accountOperationsList(accountId), HttpStatus.OK);
+		} catch(AccountOperationsException aoe) {
+			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.NOT_FOUND);
+		}
+	}
 }

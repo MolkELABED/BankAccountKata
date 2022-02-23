@@ -63,4 +63,23 @@ public void setAmount(Double amount) {
   
   @ManyToOne(fetch = FetchType.LAZY)
   Account account;
+  
+  //The default equals compares objects based on location in memory, this equals() method compares arrays based on what's inside of them!
+  @Override
+  public boolean equals(Object obj) {
+     if( !(obj instanceof Transaction)) {
+         return false;
+     }
+
+     Transaction transaction2 = (Transaction)obj;
+     return compareEquality(this,transaction2);
+  }
+  
+  static boolean compareEquality(Transaction transaction1, Transaction transaction2) {
+	    if ((transaction1.id.equals(transaction2.id)) && (transaction1.amount.equals(transaction2.amount)) && (transaction1.operationName.equals(transaction2.operationName))){
+	    	return true;
+	    } else {
+	    	return false;
+	    }
+	}
 }

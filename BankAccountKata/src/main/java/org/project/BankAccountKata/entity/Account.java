@@ -43,5 +43,24 @@ public Account(Long id, Double balance) {
   public void setBalance(Double balance) {
 	  this.balance = balance;
   }
+  
+  //The default equals compares objects based on location in memory, this equals() method compares arrays based on what's inside of them!
+  @Override
+  public boolean equals(Object obj) {
+     if( !(obj instanceof Account)) {
+         return false;
+     }
+
+     Account account2 = (Account)obj;
+     return compareEquality(this, account2);
+  }
+  
+  static boolean compareEquality(Account account1, Account account2) {
+	    if ((account1.id.equals(account2.id)) && (account1.balance.equals(account2.balance))){
+	    	return true;
+	    } else {
+	    	return false;
+	    }
+	}
 
 }

@@ -8,6 +8,7 @@ import org.project.BankAccountKata.exception.AccountOperationsException;
 import org.project.BankAccountKata.repository.AccountRepository;
 import org.project.BankAccountKata.repository.CustomerRepository;
 import org.project.BankAccountKata.repository.TransactionRepository;
+import org.project.BankAccountKata.entity.Transaction;
 import org.project.BankAccountKata.repository.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -76,5 +77,17 @@ public class TransactionService {
 			}
 		}
 		return null;
+	}
+	
+	//get the list of operations of an account using the id of the account
+	public List<Transaction> accountOperationsList(Long accountId) {
+		List<Transaction> transactionList = null;
+		List<Transaction> accountTransactionList = transactionRepository.findTransactionByAccountId(accountId);
+		if (accountTransactionList.size() > 0) {
+			transactionList = transactionRepository.findTransactionByAccountId(accountId);
+		} else {
+			throw new AccountOperationsException("No operation found");
+		}
+		return transactionList;
 	}
 }
