@@ -72,6 +72,32 @@ class BankAccountKataApplicationTests {
 	}
 	
 	@Test
+	public void should_throw_exception_when_account_is_not_associated_to_the_customer() {
+		//arrange
+		Long accountId = 5L;
+		Long customerId = 1L;
+		
+		//assert
+		assertThrows(AccountOperationsException.class, () -> {
+			customerRepository.displayBalance(customerId, accountId);
+		});
+	}
+	
+	@Test
+	public void should_display_balance() {
+		//arrange
+		Long accountId = 1L;
+		Long customerId = 1L;
+		Double expectedBalance = 1000D;
+		
+		//act
+		Double actualBalance = customerRepository.displayBalance(customerId, accountId);
+		
+		//assert
+		assertThat(actualBalance).isEqualTo(expectedBalance);
+	}
+	
+	@Test
 	void contextLoads() {
 	}
 

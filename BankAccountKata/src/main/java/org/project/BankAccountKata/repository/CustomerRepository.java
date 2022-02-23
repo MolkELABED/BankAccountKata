@@ -37,4 +37,13 @@ public class CustomerRepository {
 		}
 		return accountsList;
 	}
+	
+	//display the balance of an account using the id of the customer and the id of the account
+	public Double displayBalance(Long customerId, Long accountId) {
+		return findCustomer(customerId).getAccounts().stream()
+				.filter(account -> account.getId() == accountId)
+				.findAny()
+				.map(Account::getBalance)
+				.orElseThrow(() -> new AccountOperationsException("Account not found"));
+	}
 }

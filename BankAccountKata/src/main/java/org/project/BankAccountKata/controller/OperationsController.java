@@ -39,4 +39,14 @@ public class OperationsController {
 			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	//display the balance of an account by the customer id and the account id
+	@GetMapping(value="/accounts/{customerId}/{accountId}/balance")
+	public ResponseEntity<?> displayBalance(@PathVariable("accountId") Long accountId, @PathVariable("customerId") Long customerId) {
+		try {
+			return new ResponseEntity<>(customerRepository.displayBalance(accountId, customerId), HttpStatus.OK);
+		} catch(AccountOperationsException aoe) {
+			return new ResponseEntity<>(aoe.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 }
